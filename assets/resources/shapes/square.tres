@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="PieceShape" load_steps=2 format=3 uid="uid://k8uv4ksr5j5p"]
+
+[ext_resource type="Script" path="res://scripts/custom_resources/PieceShape.cs" id="1_agpws"]
+
+[resource]
+script = ExtResource("1_agpws")
+Shape = Array[Array]([[true, true], [true, true]])
