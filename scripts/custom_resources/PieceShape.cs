@@ -6,7 +6,7 @@ namespace Stacker.Scripts.CustomResources;
 [GlobalClass]
 public partial class PieceShape : Resource
 {
-    public Array<Array<bool>> _shape;
+    private Array<Array<bool>> _shape;
 
     [Export]
     public Array<Array<bool>> Shape
@@ -79,12 +79,12 @@ public partial class PieceShape : Resource
                 bool hasNeighbours = false;
                 foreach (int[] direction in directions)
                 {
-                    if (i + direction[i] < 0 ||  j + direction[j] < 0 || i + direction[i] >= shape.Count || j + direction[j] >= shape[i].Count)
+                    if (i + direction[0] < 0 ||  j + direction[1] < 0 || i + direction[0] >= shape.Count || j + direction[1] >= shape[i + direction[0]].Count)
                     {
                         continue;
                     }
 
-                    if (shape[i + direction[i]][j + direction[j]])
+                    if (shape[i + direction[0]][j + direction[1]])
                     {
                         hasNeighbours = true;
                         break;

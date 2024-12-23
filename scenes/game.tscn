@@ -1,6 +1,13 @@
-[gd_scene load_steps=3 format=3 uid="uid://dwg3sh31hyjdh"]
+[gd_scene load_steps=10 format=3 uid="uid://dwg3sh31hyjdh"]
 
 [ext_resource type="PackedScene" uid="uid://brhchqn5pu7kt" path="res://scenes/current_piece.tscn" id="1_k7l60"]
+[ext_resource type="Resource" uid="uid://win6c5wxt004" path="res://assets/resources/shapes/inverted_l.tres" id="2_5ouof"]
+[ext_resource type="Resource" uid="uid://cr565q6akltqg" path="res://assets/resources/shapes/inverted_s.tres" id="3_vj21x"]
+[ext_resource type="Resource" uid="uid://bewsxxi3t1cdy" path="res://assets/resources/shapes/l.tres" id="4_dlwy4"]
+[ext_resource type="Resource" uid="uid://du7x6mnk55f" path="res://assets/resources/shapes/line.tres" id="5_jskj7"]
+[ext_resource type="Resource" uid="uid://bd71xmg0o2qno" path="res://assets/resources/shapes/s.tres" id="6_soral"]
+[ext_resource type="Resource" uid="uid://k8uv4ksr5j5p" path="res://assets/resources/shapes/square.tres" id="7_2xpnk"]
+[ext_resource type="Resource" uid="uid://d3k2k8unrjfl4" path="res://assets/resources/shapes/t.tres" id="8_i6yci"]
 
 [sub_resource type="TileSet" id="TileSet_p84by"]
 tile_size = Vector2i(32, 32)
@@ -10,4 +17,37 @@ tile_size = Vector2i(32, 32)
 [node name="TileMapLayer" type="TileMapLayer" parent="."]
 tile_set = SubResource("TileSet_p84by")
 
-[node name="CurrentPiece" parent="." instance=ExtResource("1_k7l60")]
+[node name="InvertedL" parent="." instance=ExtResource("1_k7l60")]
+position = Vector2(85, 57)
+_shape = ExtResource("2_5ouof")
+_color = Color(1, 0.427451, 0, 1)
+
+[node name="InvertedS" parent="." instance=ExtResource("1_k7l60")]
+position = Vector2(372, 160)
+_shape = ExtResource("3_vj21x")
+_color = Color(1, 0, 0, 1)
+
+[node name="L" parent="." instance=ExtResource("1_k7l60")]
+position = Vector2(249, 156)
+_shape = ExtResource("4_dlwy4")
+_color = Color(0, 0, 1, 1)
+
+[node name="Line" parent="." instance=ExtResource("1_k7l60")]
+position = Vector2(92, 164)
+_shape = ExtResource("5_jskj7")
+_color = Color(0, 1, 1, 1)
+
+[node name="S" parent="." instance=ExtResource("1_k7l60")]
+position = Vector2(368, 52)
+_shape = ExtResource("6_soral")
+_color = Color(0, 1, 0, 1)
+
+[node name="Square" parent="." instance=ExtResource("1_k7l60")]
+position = Vector2(228, 49)
+_shape = ExtResource("7_2xpnk")
+_color = Color(1, 1, 0, 1)
+
+[node name="T" parent="." instance=ExtResource("1_k7l60")]
+position = Vector2(91, 285)
+_shape = ExtResource("8_i6yci")
+_color = Color(0.513726, 0, 1, 1)
