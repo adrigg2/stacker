@@ -35,16 +35,67 @@ public partial class PieceShape : Resource
     {
     }
 
-    private bool CheckShape(Array<Array<bool>> shape)
+    public void RotateClockwise()
     {
+        Array<Array<bool>> newShape = CreateArray(Shape[0].Count, Shape.Count);
+
+        for (int i = 0; i < newShape.Count; i++)
+        {
+            for (int j = 0; j < newShape[i].Count; j++)
+            {
+                newShape[i][j] = Shape[Shape.Count - j - 1][i];
+            }
+        }
+
+        Shape = newShape;
+    }
+
+    public void RotateCounterClockwise()
+    {
+        Array<Array<bool>> newShape = CreateArray(Shape[0].Count, Shape.Count);
+
+        for (int i = 0; i < newShape.Count; i++)
+        {
+            for (int j = 0; j < newShape[i].Count; j++)
+            {
+                newShape[i][j] = Shape[j][Shape[0].Count - i - 1];
+            }            
+        }
+
+        Shape = newShape;
+    }
+
+    private static Array<Array<bool>> CreateArray(int countX, int countY)
+    {
+        Array<Array<bool>> array = new();
+
+        for (int i = 0; i < countX; i++)
+        {
+            Array<bool> row = new();
+            row.Resize(countY);
+            row.Fill(false);
+            array.Add(row);
+        }
+
+        return array;
+    }
+
+    private static bool CheckShape(Array<Array<bool>> shape)
+    {
+        if (shape.Count == 0) 
+        {
+            return true;
+        }
+
         if (shape.Count > 4)
         {
             return false;
         }
 
+        int itemCount = shape[0].Count;
         foreach (var item in shape)
         {
-            if (item.Count > 4)
+            if (item.Count > 4 || item.Count != itemCount)
             {
                 return false;
             }

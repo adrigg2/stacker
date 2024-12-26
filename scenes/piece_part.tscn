@@ -1,8 +1,14 @@
-[gd_scene load_steps=2 format=3 uid="uid://b4tulbusbvlsh"]
+[gd_scene load_steps=3 format=3 uid="uid://b4tulbusbvlsh"]
 
 [ext_resource type="Texture2D" uid="uid://bfucc3tbogywt" path="res://assets/sprites/piecePart.png" id="1_8j03q"]
 
-[node name="PiecePart" type="Node2D"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_k1inr"]
+size = Vector2(32, 32)
+
+[node name="PiecePart" type="StaticBody2D"]
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_8j03q")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_k1inr")
