@@ -18,13 +18,12 @@ public partial class CurrentPiece : Node2D
 
     private List<Node2D> _parts;
 
+    public PieceShape Shape { get => _shape; }
+
 	public override void _Ready()
 	{
         _parts = new List<Node2D>();
-        GenerateParts();
-
-        DrawPiece();
-	}
+    }
 
     public override void _UnhandledKeyInput(InputEvent @event)
     {
@@ -40,6 +39,14 @@ public partial class CurrentPiece : Node2D
         }
     }
 
+    public void GeneratePiece(PieceShape shape, Color color)
+    {
+        _shape = shape;
+        _color = color;
+        GenerateParts();
+        DrawPiece();
+    }
+
 	private void DrawPiece()
 	{
         int part = 0;
@@ -50,7 +57,7 @@ public partial class CurrentPiece : Node2D
                 if (_shape.Shape[i][j])
                 {
                     Node2D piecePart = _parts[part];
-                    piecePart.Position = new Vector2(i * GlobalVariables.piecePartSize, j * GlobalVariables.piecePartSize);
+                    piecePart.Position = new Vector2(i * GlobalVariables.PiecePartSize, j * GlobalVariables.PiecePartSize);
                     part++;
                 }
             }

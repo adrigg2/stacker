@@ -4,4 +4,4 @@
 
 [resource]
 script = ExtResource("1_f0g5g")
-Shape = Array[Array]([[true, true, true], [false, false, true]])
+Shape = Array[Array]([[false, true], [false, true], [true, true]])
