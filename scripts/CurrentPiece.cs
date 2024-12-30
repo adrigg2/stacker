@@ -21,12 +21,18 @@ public partial class CurrentPiece : Node2D
     private List<Node2D> _parts;
 
     private double _timeSinceLastInput;
+    private double _timeInRow;
+    private double _maxTimeInRow;
+    private int _level;
 
     public PieceShape Shape { get => _shape; }
 
 	public override void _Ready()
 	{
         _timeSinceLastInput = 0.2;
+        _timeInRow = 0;
+        _level = 1;
+        _maxTimeInRow = CalculateGravity();
         _parts = new List<Node2D>();
     }
 
@@ -66,6 +72,12 @@ public partial class CurrentPiece : Node2D
         }
 
         _timeSinceLastInput += delta;
+        _timeInRow += delta;
+        if (_timeInRow >= _maxTimeInRow)
+        {
+            Position += new Vector2(0, GlobalVariables.PiecePartSize);
+            _timeInRow = 0;
+        }
     }
 
     public void GeneratePiece(PieceShape shape, Color color)
@@ -108,5 +120,10 @@ public partial class CurrentPiece : Node2D
                 }
             }
         }
+    }
+
+    private double CalculateGravity()
+    {
+        return Math.Pow(0.8 - ((_level - 1) * 0.007), _level - 1);
     }
 }
