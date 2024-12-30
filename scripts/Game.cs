@@ -5,6 +5,7 @@ using Stacker.Scripts.CustomResources;
 using System;
 using System.Linq;
 
+namespace Stacker.Scripts;
 public partial class Game : Node2D
 {
     [Export]
