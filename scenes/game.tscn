@@ -24,7 +24,6 @@ sources/0 = SubResource("TileSetAtlasSource_1xosa")
 [node name="Game" type="Node2D" node_paths=PackedStringArray("_board", "_currentPiece")]
 script = ExtResource("1_hw7sp")
 _board = NodePath("TileMapLayer")
-_colors = PackedColorArray(0, 0, 1, 1, 1, 0, 0, 1, 1, 0.529412, 0, 1, 0, 1, 1, 1, 0, 1, 0, 1, 1, 1, 0, 1, 0.498039, 0, 1, 1)
 _pieceShapes = Array[Object]([ExtResource("2_ri8ja"), ExtResource("3_h6e5y"), ExtResource("4_1l1o1"), ExtResource("5_ai1ci"), ExtResource("6_th5sk"), ExtResource("7_teyyb"), ExtResource("8_i6yci")])
 _currentPiece = NodePath("TileMapLayer/CurrentPiece")
 

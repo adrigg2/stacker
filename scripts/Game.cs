@@ -11,10 +11,6 @@ public partial class Game : Node2D
     [Export]
     private TileMapLayer _board;
 
-    // TODO: Find better solution to this
-    [Export]
-    private Color[] _colors;
-
     [Export]
     private PieceShape[] _pieceShapes;
 
@@ -24,6 +20,8 @@ public partial class Game : Node2D
     private int[] _currentPool;
     private int[] _nextPool;
     private int _currentPoolIndex;
+
+    private bool[,] _boardSquares;
 
     public override void _Ready()
     {
@@ -44,6 +42,11 @@ public partial class Game : Node2D
             }
         }
 
+        _boardSquares = new bool[GlobalVariables.BoardWidth, GlobalVariables.BoardHeigth];
+
+        _currentPiece.BoardSquares = _boardSquares;
+        _currentPiece.Board = _board;
+
         GenerateNextPool();
         _currentPool = _nextPool;
         GenerateNextPool();
@@ -61,7 +64,7 @@ public partial class Game : Node2D
             GenerateNextPool();
         }
 
-        _currentPiece.GeneratePiece(_pieceShapes[_currentPool[_currentPoolIndex]], _colors[_currentPool[_currentPoolIndex]]);
+        _currentPiece.GeneratePiece(_pieceShapes[_currentPool[_currentPoolIndex]]);
         int positionX = (GlobalVariables.BoardWidth - _currentPiece.Shape.Shape.Count) / 2;
         int positionY = -_currentPiece.Shape.Shape[0].Count;
 
@@ -91,13 +94,15 @@ public partial class Game : Node2D
         foreach (var part in parts)
         {
             Vector2 position = part.GlobalPosition;
-            GD.Print($"{position}, before");
             part.GetParent()?.RemoveChild(part);
             AddChild(part);
             part.GlobalPosition = position;
-            GD.Print($"{part.GlobalPosition}, after");
+
+            Vector2I mapPosition = _board.LocalToMap(_board.ToLocal(position));
+            _boardSquares[mapPosition.X, mapPosition.Y] = true;
         }
 
+        _currentPiece.BoardSquares = _boardSquares;
         PlaceNextPiece();
     }
 }

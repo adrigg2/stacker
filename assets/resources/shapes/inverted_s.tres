@@ -4,4 +4,5 @@
 
 [resource]
 script = ExtResource("1_5ap2l")
+_color = Color(1, 0, 0, 1)
 Shape = Array[Array]([[true, false], [true, true], [false, true]])

@@ -9,6 +9,9 @@ public partial class PieceShape : Resource
     private Array<Array<bool>> _shape;
 
     [Export]
+    private Color _color;
+
+    [Export]
     public Array<Array<bool>> Shape
     {
         get => _shape;
@@ -25,6 +28,8 @@ public partial class PieceShape : Resource
             }
         }
     }
+
+    public Color Color => _color;
 
     public PieceShape(Array<Array<bool>> shape)
     {
