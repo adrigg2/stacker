@@ -1,5 +1,5 @@
 using Godot;
-using Stacker.Scripts;
+using Godot.Collections;
 using Stacker.Scripts.Autoloads;
 using Stacker.Scripts.CustomResources;
 using System;
@@ -27,6 +27,8 @@ public partial class Game : Node2D
 
     public override void _Ready()
     {
+        _currentPiece.PieceLocked += OnPieceLocked;
+
         for (int i = 0; i < GlobalVariables.BoardWidth; i++)
         {
             for (int j = 0; j < GlobalVariables.BoardHeigth; j++)
@@ -65,6 +67,7 @@ public partial class Game : Node2D
 
         Vector2 startingPosition = _board.MapToLocal(new Vector2I(positionX, positionY));
         _currentPiece.Position = startingPosition;
+        _currentPoolIndex++;
     }
 
     private void GenerateNextPool()
@@ -81,5 +84,20 @@ public partial class Game : Node2D
                 _nextPool[generatedPool++] = possibleValue;
             }
         }
+    }
+
+    private void OnPieceLocked(Array<Node2D> parts)
+    {
+        foreach (var part in parts)
+        {
+            Vector2 position = part.GlobalPosition;
+            GD.Print($"{position}, before");
+            part.GetParent()?.RemoveChild(part);
+            AddChild(part);
+            part.GlobalPosition = position;
+            GD.Print($"{part.GlobalPosition}, after");
+        }
+
+        PlaceNextPiece();
     }
 }
