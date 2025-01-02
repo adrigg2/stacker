@@ -52,7 +52,9 @@ public partial class CurrentPiece : Node2D
         _canFall = true;
         _lockTimer = new Timer();
         AddChild(_lockTimer);
+        _lockTimer.OneShot = true;
         _lockTimer.Timeout += LockPiece;
+        _lockTimer.Timeout += () => GD.Print("Timeout");
     }
 
     public override void _UnhandledKeyInput(InputEvent @event)
@@ -129,6 +131,7 @@ public partial class CurrentPiece : Node2D
 
     public void GeneratePiece(PieceShape shape)
     {
+        _canFall = true;
         _parts.Clear();
         _shape = shape;
         GenerateParts();
