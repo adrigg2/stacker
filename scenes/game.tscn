@@ -32,4 +32,3 @@ position = Vector2(640, 130)
 tile_set = SubResource("TileSet_p84by")
 
 [node name="CurrentPiece" parent="TileMapLayer" instance=ExtResource("1_k7l60")]
-position = Vector2(-555, -73)
