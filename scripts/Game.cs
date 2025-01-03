@@ -3,6 +3,7 @@ using Godot.Collections;
 using Stacker.Scripts.Autoloads;
 using Stacker.Scripts.CustomResources;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Stacker.Scripts;
@@ -103,6 +104,43 @@ public partial class Game : Node2D
         }
 
         _currentPiece.BoardSquares = _boardSquares;
+        CheckClear();
         PlaceNextPiece();
+    }
+
+    private void CheckClear()
+    {
+        List<int> rows = new();
+
+        for (int i = 0; i < _boardSquares.GetLength(0); i++)
+        {
+            bool cleared = true;
+            for (int j = 0; j <  _boardSquares.GetLength(1); j++)
+            {
+                if (!_boardSquares[i, j])
+                {
+                    cleared = false; 
+                    break;
+                }
+            }
+
+            if (cleared)
+            {
+                rows.Add(i);
+            }
+        }
+
+        if (rows.Count > 0)
+        {
+            ClearRows(rows);
+        }
+    }
+
+    private void ClearRows(List<int> rows)
+    {
+        foreach (int row in rows)
+        {
+            GD.Print($"Cleared: {row}");
+        }
     }
 }

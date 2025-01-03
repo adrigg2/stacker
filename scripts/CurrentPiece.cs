@@ -282,19 +282,19 @@ public partial class CurrentPiece : Node2D
         if (Position.X < 0)
         {
             Position = new Vector2(0, Position.Y);
-            GD.Print($"Corrected position to ${Position}");
+            GD.Print($"Corrected position to {Position}");
         }
 
         if (Position.X > _maxX)
         {
             Position = new Vector2(_maxX, Position.Y);
-            GD.Print($"Corrected position to ${Position}");
+            GD.Print($"Corrected position to {Position}");
         }
 
         if (Position.Y > _maxY)
         {
             Position = new Vector2(Position.X, _maxY);
-            GD.Print($"Corrected position to ${Position}");
+            GD.Print($"Corrected position to {Position}");
         }
     }
 
