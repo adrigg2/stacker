@@ -22,10 +22,14 @@ public partial class Game : Node2D
     private int[] _nextPool;
     private int _currentPoolIndex;
 
+    private System.Collections.Generic.Dictionary<Vector2I, Node2D> _parts;
+
     private bool[,] _boardSquares;
 
     public override void _Ready()
     {
+        _parts = new System.Collections.Generic.Dictionary<Vector2I, Node2D>();
+
         _currentPiece.PieceLocked += OnPieceLocked;
 
         for (int i = 0; i < GlobalVariables.BoardWidth; i++)
@@ -101,6 +105,7 @@ public partial class Game : Node2D
 
             Vector2I mapPosition = _board.LocalToMap(_board.ToLocal(position));
             _boardSquares[mapPosition.X, mapPosition.Y] = true;
+            _parts.Add(mapPosition, part);
         }
 
         _currentPiece.BoardSquares = _boardSquares;
@@ -112,12 +117,12 @@ public partial class Game : Node2D
     {
         List<int> rows = new();
 
-        for (int i = 0; i < _boardSquares.GetLength(0); i++)
+        for (int i = 0; i < _boardSquares.GetLength(1); i++)
         {
             bool cleared = true;
-            for (int j = 0; j <  _boardSquares.GetLength(1); j++)
+            for (int j = 0; j <  _boardSquares.GetLength(0); j++)
             {
-                if (!_boardSquares[i, j])
+                if (!_boardSquares[j, i])
                 {
                     cleared = false; 
                     break;
@@ -140,7 +145,47 @@ public partial class Game : Node2D
     {
         foreach (int row in rows)
         {
-            GD.Print($"Cleared: {row}");
+            for (int i = 0; i < GlobalVariables.BoardWidth; i++)
+            {
+                _parts[new Vector2I(i, row)].QueueFree();
+                _parts.Remove(new Vector2I(i, row));
+            }
         }
+
+        List<Node2D> parts = _parts.Values.ToList();
+        parts = parts.OrderByDescending(i => i.Position.Y).ToList();
+        foreach (var part in parts)
+        {
+            Vector2I iPos = _board.LocalToMap(_board.ToLocal(part.GlobalPosition));
+
+            int rowsToLower = 0;
+            foreach (int row in rows)
+            {
+                if (row > iPos.Y)
+                {
+                    rowsToLower++;
+                }
+            }
+
+            Vector2I fPos = new Vector2I (iPos.X, iPos.Y + rowsToLower);
+            if (iPos != fPos)
+            {
+                MovePart(iPos, fPos);
+            }
+        }
+
+        _currentPiece.BoardSquares = _boardSquares;
+    }
+
+    private void MovePart(Vector2I iPos, Vector2I fPos)
+    {
+        Node2D part = _parts[iPos];
+        _parts.Remove(iPos);
+        _boardSquares[iPos.X, iPos.Y] = false;
+
+        part.GlobalPosition = _board.ToGlobal(_board.MapToLocal(fPos));
+
+        _parts.Add(fPos, part);
+        _boardSquares[fPos.X, fPos.Y] = true;
     }
 }

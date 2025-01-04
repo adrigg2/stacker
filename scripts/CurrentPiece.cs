@@ -3,8 +3,6 @@ using Godot.Collections;
 using Stacker.Scripts.Autoloads;
 using Stacker.Scripts.CustomResources;
 using System;
-using System.Collections.Generic;
-using static Godot.TextServer;
 
 namespace Stacker.Scripts;
 public partial class CurrentPiece : Node2D
@@ -210,7 +208,6 @@ public partial class CurrentPiece : Node2D
                 _lockTimer.Start();
             }
 
-            _canFall = false;
             return false;
         }
 
@@ -218,13 +215,18 @@ public partial class CurrentPiece : Node2D
         {
             Vector2I mapPosition = _board.LocalToMap(_board.ToLocal(piece.GlobalPosition));
 
-            if (mapPosition.Y + 1 < 0)
+            if (mapPosition.Y + 1 < 0 || mapPosition.Y + 1 >= _maxY)
             {
                 continue;
             }
 
-            if (mapPosition.Y >= _maxY)
+            if (Position.Y >= _maxY)
             {
+                if (_lockTimer.TimeLeft == 0)
+                {
+                    _lockTimer.Start();
+                }
+
                 return false;
             }
 
