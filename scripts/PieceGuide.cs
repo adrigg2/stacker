@@ -16,7 +16,6 @@ public partial class PieceGuide : Node2D
     private TileMapLayer _board;
 
     private bool[,] _boardSquares;
-    private bool _canFall;
 
     private float _maxY;
 
@@ -37,7 +36,6 @@ public partial class PieceGuide : Node2D
     public override void _Ready()
     {
         _parts = new Array<Node2D>();
-        _canFall = true;
     }
 
     public void DrawPiece()
@@ -62,10 +60,11 @@ public partial class PieceGuide : Node2D
 
     public void Fall()
     {
-        while (_canFall)
+        bool canFall = true;
+        while (canFall)
         {
             Position += new Vector2(0, GlobalVariables.PiecePartSize);
-            _canFall = CheckMovementY();
+            canFall = CheckMovementY();
         }
     }
 
@@ -97,7 +96,7 @@ public partial class PieceGuide : Node2D
 
     private bool CheckMovementY()
     {
-        if (_canFall && Position.Y >= _maxY)
+        if (Position.Y >= _maxY)
         {
             return false;
         }

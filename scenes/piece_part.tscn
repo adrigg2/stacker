@@ -3,5 +3,4 @@
 [ext_resource type="Texture2D" uid="uid://bfucc3tbogywt" path="res://assets/sprites/piecePart.png" id="1_8j03q"]
 
 [node name="PiecePart" type="Sprite2D"]
-modulate = Color(1, 1, 1, 0.27451)
 texture = ExtResource("1_8j03q")

@@ -204,6 +204,7 @@ public partial class CurrentPiece : Node2D
 
     public void UpdatePieceGuide()
     {
+        GD.Print("update guide");
         _pieceGuide.Position = Position;
         _pieceGuide.Shape = _currentShape;
         _pieceGuide.DrawPiece();

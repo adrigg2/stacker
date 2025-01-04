@@ -43,7 +43,7 @@ tile_set = SubResource("TileSet_p84by")
 _pieceGuide = NodePath("../PieceGuide")
 
 [node name="PieceGuide" type="Node2D" parent="TileMapLayer"]
-modulate = Color(1, 1, 1, 0.27451)
+modulate = Color(1, 1, 1, 0.392157)
 script = ExtResource("12_shskj")
 _piecePart = ExtResource("9_6eiyw")
 

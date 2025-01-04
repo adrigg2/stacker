@@ -101,7 +101,7 @@ public partial class Game : Node
                     child.QueueFree();
                 }
             }
-            DrawPiece(_heldPiece, _heldPieceViewport, new Vector2(0, 0), new Vector2(1, 1));
+            DrawPiece(_heldPiece, _heldPieceViewport, new Vector2(0, 0));
             _canHold = false;
         }
     }
@@ -264,18 +264,18 @@ public partial class Game : Node
         {
             if (i >= _currentPool.Length)
             {
-                DrawPiece(_pieceShapes[_nextPool[i % _nextPool.Length]], _poolViewport, position, new Vector2(.5f, .5f));
+                DrawPiece(_pieceShapes[_nextPool[i % _nextPool.Length]], _poolViewport, position);
             }
             else
             {
-                DrawPiece(_pieceShapes[_currentPool[i]], _poolViewport, position, new Vector2(1, 1));
+                DrawPiece(_pieceShapes[_currentPool[i]], _poolViewport, position);
             }
 
             position += new Vector2(0, 128);
         }
     }
 
-    private void DrawPiece(PieceShape shape, SubViewport viewport, Vector2 position, Vector2 scale)
+    private void DrawPiece(PieceShape shape, SubViewport viewport, Vector2 position)
     {
         for (int i = 0; i < shape.Shape.Count; i++)
         {
@@ -284,8 +284,7 @@ public partial class Game : Node
                 if (shape.Shape[i][j])
                 {
                     Node2D piecePart = (Node2D)_piecePart.Instantiate();
-                    piecePart.Position = new Vector2(i * GlobalVariables.PiecePartSize * scale.X, j * GlobalVariables.PiecePartSize * scale.Y) + position;
-                    piecePart.Scale = scale;
+                    piecePart.Position = new Vector2(i * GlobalVariables.PiecePartSize, j * GlobalVariables.PiecePartSize) + position;
                     piecePart.Modulate = shape.Color;
                     viewport.AddChild(piecePart);
                 }
