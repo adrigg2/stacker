@@ -124,6 +124,7 @@ public partial class Game : Node
         _currentPoolIndex++;
         DrawPool();
         _canHold = true;
+        _currentPiece.UpdatePieceGuide();
     }
 
     private void PlaceHeldPiece()

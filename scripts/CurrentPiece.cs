@@ -21,6 +21,9 @@ public partial class CurrentPiece : Node2D
     [Export]
     private PackedScene _piecePart;
 
+    [Export]
+    private PieceGuide _pieceGuide;
+
     private Array<Node2D> _parts;
 
     private double _maxTimeInRow;
@@ -40,9 +43,24 @@ public partial class CurrentPiece : Node2D
 
     public PieceShape Shape { get => _defaultShape; }
 
-    public bool[,] BoardSquares { get => _boardSquares; set => _boardSquares = value; }
+    public bool[,] BoardSquares 
+    { 
+        get => _boardSquares;
+        set
+        {
+            _boardSquares = value;
+            _pieceGuide.BoardSquares = value;
+        }
+    }
 
-    public TileMapLayer Board { get => _board; set => _board = value; }
+    public TileMapLayer Board 
+    { 
+        get => _board; 
+        set {
+            _board = value;
+            _pieceGuide.Board = value;
+        }
+    }
 
     public override void _Ready()
     {
@@ -81,6 +99,8 @@ public partial class CurrentPiece : Node2D
             DrawPiece();
             UpdateBounds();
             CorrectPosition();
+
+            UpdatePieceGuide();
         }
         else if (@event.IsActionPressed("rotate_clock"))
         {
@@ -95,6 +115,8 @@ public partial class CurrentPiece : Node2D
             DrawPiece();
             UpdateBounds();
             CorrectPosition();
+
+            UpdatePieceGuide();
         }
         else if (@event.IsActionPressed("rotate_180"))
         {
@@ -110,6 +132,13 @@ public partial class CurrentPiece : Node2D
             DrawPiece();
             UpdateBounds();
             CorrectPosition();
+
+            UpdatePieceGuide();
+        }
+        else if (@event.IsActionPressed("hard_drop"))
+        {
+            Position = _pieceGuide.Position;
+            LockPiece();
         }
     }
 
@@ -125,6 +154,8 @@ public partial class CurrentPiece : Node2D
                     _lockTimer.Start();
                     _remainingResets--;
                 }
+
+                UpdatePieceGuide();
             }
             else if (Input.IsActionPressed("move_right") && CheckMovementX(-1))
             {
@@ -134,6 +165,8 @@ public partial class CurrentPiece : Node2D
                     _lockTimer.Start();
                     _remainingResets--;
                 }
+
+                UpdatePieceGuide();
             }
             else if (Input.IsActionPressed("soft_drop") && _canFall)
             {
@@ -167,6 +200,14 @@ public partial class CurrentPiece : Node2D
             piece.QueueFree();
         }
         _parts.Clear();
+    }
+
+    public void UpdatePieceGuide()
+    {
+        _pieceGuide.Position = Position;
+        _pieceGuide.Shape = _currentShape;
+        _pieceGuide.DrawPiece();
+        _pieceGuide.Fall();
     }
 
     private void Drop()

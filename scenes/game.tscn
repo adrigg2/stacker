@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://dwg3sh31hyjdh"]
+[gd_scene load_steps=16 format=3 uid="uid://dwg3sh31hyjdh"]
 
 [ext_resource type="Script" path="res://scripts/Game.cs" id="1_hw7sp"]
 [ext_resource type="PackedScene" uid="uid://brhchqn5pu7kt" path="res://scenes/current_piece.tscn" id="1_k7l60"]
@@ -11,6 +11,7 @@
 [ext_resource type="Resource" uid="uid://k8uv4ksr5j5p" path="res://assets/resources/shapes/square.tres" id="7_teyyb"]
 [ext_resource type="Resource" uid="uid://d3k2k8unrjfl4" path="res://assets/resources/shapes/t.tres" id="8_i6yci"]
 [ext_resource type="PackedScene" uid="uid://b4tulbusbvlsh" path="res://scenes/piece_part.tscn" id="9_6eiyw"]
+[ext_resource type="Script" path="res://scripts/PieceGuide.cs" id="12_shskj"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_1xosa"]
 texture = ExtResource("2_5rj3m")
@@ -38,7 +39,13 @@ _piecePart = ExtResource("9_6eiyw")
 position = Vector2(640, 130)
 tile_set = SubResource("TileSet_p84by")
 
-[node name="CurrentPiece" parent="TileMapLayer" instance=ExtResource("1_k7l60")]
+[node name="CurrentPiece" parent="TileMapLayer" node_paths=PackedStringArray("_pieceGuide") instance=ExtResource("1_k7l60")]
+_pieceGuide = NodePath("../PieceGuide")
+
+[node name="PieceGuide" type="Node2D" parent="TileMapLayer"]
+modulate = Color(1, 1, 1, 0.27451)
+script = ExtResource("12_shskj")
+_piecePart = ExtResource("9_6eiyw")
 
 [node name="UI" type="Control" parent="."]
 layout_mode = 3
