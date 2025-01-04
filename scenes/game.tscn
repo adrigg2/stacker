@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://dwg3sh31hyjdh"]
+[gd_scene load_steps=17 format=3 uid="uid://dwg3sh31hyjdh"]
 
 [ext_resource type="Script" path="res://scripts/Game.cs" id="1_hw7sp"]
 [ext_resource type="PackedScene" uid="uid://brhchqn5pu7kt" path="res://scenes/current_piece.tscn" id="1_k7l60"]
@@ -26,7 +26,10 @@ sources/0 = SubResource("TileSetAtlasSource_1xosa")
 [sub_resource type="LabelSettings" id="LabelSettings_8yhtn"]
 font_size = 45
 
-[node name="Game" type="Node" node_paths=PackedStringArray("_board", "_currentPiece", "_heldPieceViewport", "_poolViewport")]
+[sub_resource type="LabelSettings" id="LabelSettings_tpinm"]
+font_size = 30
+
+[node name="Game" type="Node" node_paths=PackedStringArray("_board", "_currentPiece", "_heldPieceViewport", "_poolViewport", "_lines", "_level")]
 script = ExtResource("1_hw7sp")
 _board = NodePath("TileMapLayer")
 _pieceShapes = Array[Object]([ExtResource("2_ri8ja"), ExtResource("3_h6e5y"), ExtResource("4_1l1o1"), ExtResource("5_ai1ci"), ExtResource("6_th5sk"), ExtResource("7_teyyb"), ExtResource("8_i6yci")])
@@ -34,6 +37,8 @@ _currentPiece = NodePath("TileMapLayer/CurrentPiece")
 _heldPieceViewport = NodePath("UI/VBoxContainer/SubViewportContainer/SubViewport")
 _poolViewport = NodePath("UI/VBoxContainer2/SubViewportContainer/SubViewport")
 _piecePart = ExtResource("9_6eiyw")
+_lines = NodePath("UI/Label")
+_level = NodePath("UI/Label3")
 
 [node name="TileMapLayer" type="TileMapLayer" parent="."]
 position = Vector2(640, 130)
@@ -94,3 +99,21 @@ size = Vector2i(512, 1024)
 render_target_update_mode = 4
 
 [node name="Camera2D" type="Camera2D" parent="UI/VBoxContainer2/SubViewportContainer/SubViewport"]
+
+[node name="Label" type="Label" parent="UI"]
+layout_mode = 0
+offset_left = 6.0
+offset_top = 560.0
+offset_right = 46.0
+offset_bottom = 583.0
+text = "Lines cleared:  "
+label_settings = SubResource("LabelSettings_tpinm")
+
+[node name="Label3" type="Label" parent="UI"]
+layout_mode = 0
+offset_left = 13.0
+offset_top = 622.0
+offset_right = 97.0
+offset_bottom = 664.0
+text = "Level:"
+label_settings = SubResource("LabelSettings_tpinm")

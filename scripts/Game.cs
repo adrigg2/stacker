@@ -29,9 +29,17 @@ public partial class Game : Node
     [Export]
     private PackedScene _piecePart;
 
+    [Export]
+    private Label _lines;
+
+    [Export]
+    private Label _level;
+
     private int[] _currentPool;
     private int[] _nextPool;
     private int _currentPoolIndex;
+    private int _clearedLines;
+    private int _goal;
 
     private System.Collections.Generic.Dictionary<Vector2I, Node2D> _parts;
 
@@ -43,6 +51,7 @@ public partial class Game : Node
     public override void _Ready()
     {
         _canHold = true;
+        _goal = GlobalVariables.Level * 5;
 
         _parts = new System.Collections.Generic.Dictionary<Vector2I, Node2D>();
 
@@ -74,6 +83,9 @@ public partial class Game : Node
         _currentPoolIndex = 0;
 
         PlaceNextPiece();
+
+        _level.Text = $"Level: {GlobalVariables.Level}";
+        _lines.Text = $"Lines cleared: {_clearedLines} / {_goal}";
     }
 
     public override void _UnhandledInput(InputEvent @event)
@@ -104,6 +116,42 @@ public partial class Game : Node
             DrawPiece(_heldPiece, _heldPieceViewport, new Vector2(0, 0));
             _canHold = false;
         }
+        else if (@event.IsActionPressed("restart"))
+        {
+            Restart();
+        }
+    }
+
+    private void Restart()
+    {
+        GlobalVariables.Level = 1;
+        _currentPiece.LevelUp();
+        _goal = GlobalVariables.Level * 5;
+
+        foreach (var part in _parts.Values)
+        {
+            part.QueueFree();
+        }
+
+        _parts.Clear();
+
+        _boardSquares = new bool[GlobalVariables.BoardWidth, GlobalVariables.BoardHeigth];
+
+        _currentPiece.BoardSquares = _boardSquares;
+        _currentPiece.Hold();
+        _canHold = true;
+
+        GenerateNextPool();
+        _currentPool = _nextPool;
+        GenerateNextPool();
+        _currentPoolIndex = 0;
+
+        PlaceNextPiece();
+
+        _clearedLines = 0;
+
+        _level.Text = $"Level: {GlobalVariables.Level}";
+        _lines.Text = $"Lines cleared: {_clearedLines} / {_goal}";
     }
 
     private void PlaceNextPiece()
@@ -135,6 +183,7 @@ public partial class Game : Node
 
         Vector2 startingPosition = _board.MapToLocal(new Vector2I(positionX, positionY));
         _currentPiece.Position = startingPosition;
+        _currentPiece.UpdatePieceGuide();
     }
 
     private void GenerateNextPool()
@@ -197,6 +246,39 @@ public partial class Game : Node
         if (rows.Count > 0)
         {
             ClearRows(rows);
+
+            int cleared = rows.Count;
+
+            switch(cleared)
+            {
+                case 1:
+                    _clearedLines++;
+                    break;
+                case 2:
+                    _clearedLines += 3;
+                    break;
+                case 3:
+                    _clearedLines += 5;
+                    break;
+                case 4:
+                    _clearedLines += 8;
+                    break;
+                default:
+                    break;
+            }
+
+            _lines.Text = $"Lines cleared: {_clearedLines} / {_goal}";
+
+
+            if (_clearedLines > _goal)
+            {
+                GlobalVariables.Level++;
+                _currentPiece.LevelUp();
+                _goal += GlobalVariables.Level * 5;
+
+                _level.Text = $"Level: {GlobalVariables.Level}";
+                _lines.Text = $"Lines cleared: {_clearedLines} / {_goal}";
+            }
         }
     }
 

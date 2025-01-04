@@ -27,7 +27,6 @@ public partial class CurrentPiece : Node2D
     private Array<Node2D> _parts;
 
     private double _maxTimeInRow;
-    private int _level;
     private int _remainingResets;
     private float _maxX;
     private float _maxY;
@@ -65,7 +64,6 @@ public partial class CurrentPiece : Node2D
     public override void _Ready()
     {
         _input = true;
-        _level = 1;
         _remainingResets = MaxResets;
         _maxTimeInRow = CalculateGravity();
         _parts = new Array<Node2D>();
@@ -211,6 +209,12 @@ public partial class CurrentPiece : Node2D
         _pieceGuide.Fall();
     }
 
+    public void LevelUp()
+    {
+        _maxTimeInRow = CalculateGravity();
+        GD.PrintRich("[color=green]Level up[/color]");
+    }
+
     private void Drop()
     {
         if (_canFall)
@@ -264,7 +268,7 @@ public partial class CurrentPiece : Node2D
 
     private double CalculateGravity()
     {
-        return Math.Pow(0.8 - ((_level - 1) * 0.007), _level - 1);
+        return Math.Pow(0.8 - ((GlobalVariables.Level - 1) * 0.007), GlobalVariables.Level - 1);
     }
 
     private bool CheckMovementY()
