@@ -7,8 +7,10 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace Stacker.Scripts;
-public partial class Game : Node2D
+public partial class Game : Node
 {
+    private const int PoolSize = 5;
+
     [Export]
     private TileMapLayer _board;
 
@@ -18,6 +20,15 @@ public partial class Game : Node2D
     [Export]
     private CurrentPiece _currentPiece;
 
+    [Export]
+    private SubViewport _heldPieceViewport;
+
+    [Export]
+    private SubViewport _poolViewport;
+
+    [Export]
+    private PackedScene _piecePart;
+
     private int[] _currentPool;
     private int[] _nextPool;
     private int _currentPoolIndex;
@@ -25,11 +36,14 @@ public partial class Game : Node2D
     private System.Collections.Generic.Dictionary<Vector2I, Node2D> _parts;
 
     private bool[,] _boardSquares;
+    private bool _canHold;
 
     private PieceShape _heldPiece;
 
     public override void _Ready()
     {
+        _canHold = true;
+
         _parts = new System.Collections.Generic.Dictionary<Vector2I, Node2D>();
 
         _currentPiece.PieceLocked += OnPieceLocked;
@@ -64,7 +78,7 @@ public partial class Game : Node2D
 
     public override void _UnhandledInput(InputEvent @event)
     {
-        if (@event.IsActionPressed("hold"))
+        if (@event.IsActionPressed("hold") && _canHold)
         {
             if (_heldPiece == null)
             {
@@ -75,9 +89,20 @@ public partial class Game : Node2D
             else
             {
                 _currentPiece.Hold();
+                PieceShape newHold = _currentPiece.Shape;
                 PlaceHeldPiece();
-                _heldPiece = _currentPiece.Shape;
+                _heldPiece = newHold;
             }
+
+            foreach (var child in _heldPieceViewport.GetChildren())
+            {
+                if (child is not Camera2D)
+                {
+                    child.QueueFree();
+                }
+            }
+            DrawPiece(_heldPiece, _heldPieceViewport, new Vector2(0, 0), new Vector2(1, 1));
+            _canHold = false;
         }
     }
 
@@ -97,6 +122,8 @@ public partial class Game : Node2D
         Vector2 startingPosition = _board.MapToLocal(new Vector2I(positionX, positionY));
         _currentPiece.Position = startingPosition;
         _currentPoolIndex++;
+        DrawPool();
+        _canHold = true;
     }
 
     private void PlaceHeldPiece()
@@ -219,5 +246,49 @@ public partial class Game : Node2D
 
         _parts.Add(fPos, part);
         _boardSquares[fPos.X, fPos.Y] = true;
+    }
+
+    private void DrawPool()
+    {
+        foreach (var child in _poolViewport.GetChildren())
+        {
+            if (child is not Camera2D)
+            {
+                child.QueueFree();
+            }
+        }
+
+        Vector2 position = new(-50, -350);
+        for (int i = _currentPoolIndex; i < PoolSize + _currentPoolIndex; i++)
+        {
+            if (i >= _currentPool.Length)
+            {
+                DrawPiece(_pieceShapes[_nextPool[i % _nextPool.Length]], _poolViewport, position, new Vector2(.5f, .5f));
+            }
+            else
+            {
+                DrawPiece(_pieceShapes[_currentPool[i]], _poolViewport, position, new Vector2(1, 1));
+            }
+
+            position += new Vector2(0, 128);
+        }
+    }
+
+    private void DrawPiece(PieceShape shape, SubViewport viewport, Vector2 position, Vector2 scale)
+    {
+        for (int i = 0; i < shape.Shape.Count; i++)
+        {
+            for (int j = 0; j < shape.Shape[i].Count; j++)
+            {
+                if (shape.Shape[i][j])
+                {
+                    Node2D piecePart = (Node2D)_piecePart.Instantiate();
+                    piecePart.Position = new Vector2(i * GlobalVariables.PiecePartSize * scale.X, j * GlobalVariables.PiecePartSize * scale.Y) + position;
+                    piecePart.Scale = scale;
+                    piecePart.Modulate = shape.Color;
+                    viewport.AddChild(piecePart);
+                }
+            }
+        }
     }
 }
