@@ -26,6 +26,8 @@ public partial class Game : Node2D
 
     private bool[,] _boardSquares;
 
+    private PieceShape _heldPiece;
+
     public override void _Ready()
     {
         _parts = new System.Collections.Generic.Dictionary<Vector2I, Node2D>();
@@ -60,6 +62,25 @@ public partial class Game : Node2D
         PlaceNextPiece();
     }
 
+    public override void _UnhandledInput(InputEvent @event)
+    {
+        if (@event.IsActionPressed("hold"))
+        {
+            if (_heldPiece == null)
+            {
+                _heldPiece = _currentPiece.Shape;
+                _currentPiece.Hold();
+                PlaceNextPiece();
+            }
+            else
+            {
+                _currentPiece.Hold();
+                PlaceHeldPiece();
+                _heldPiece = _currentPiece.Shape;
+            }
+        }
+    }
+
     private void PlaceNextPiece()
     {
         if (_currentPoolIndex == _currentPool.Length)
@@ -76,6 +97,16 @@ public partial class Game : Node2D
         Vector2 startingPosition = _board.MapToLocal(new Vector2I(positionX, positionY));
         _currentPiece.Position = startingPosition;
         _currentPoolIndex++;
+    }
+
+    private void PlaceHeldPiece()
+    {
+        _currentPiece.GeneratePiece(_heldPiece);
+        int positionX = (GlobalVariables.BoardWidth - _currentPiece.Shape.Shape.Count) / 2;
+        int positionY = -_currentPiece.Shape.Shape[0].Count;
+
+        Vector2 startingPosition = _board.MapToLocal(new Vector2I(positionX, positionY));
+        _currentPiece.Position = startingPosition;
     }
 
     private void GenerateNextPool()
@@ -149,6 +180,7 @@ public partial class Game : Node2D
             {
                 _parts[new Vector2I(i, row)].QueueFree();
                 _parts.Remove(new Vector2I(i, row));
+                _boardSquares[i, row] = false;
             }
         }
 

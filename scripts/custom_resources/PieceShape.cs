@@ -4,7 +4,7 @@ using System;
 
 namespace Stacker.Scripts.CustomResources;
 [GlobalClass]
-public partial class PieceShape : Resource
+public partial class PieceShape : Resource, ICloneable
 {
     private Array<Array<bool>> _shape;
 
@@ -31,12 +31,13 @@ public partial class PieceShape : Resource
 
     public Color Color => _color;
 
-    public PieceShape(Array<Array<bool>> shape)
+    public PieceShape(Array<Array<bool>> shape, Color color)
     {
         Shape = shape;
+        _color = color;
     }
 
-    public PieceShape() : this(new Array<Array<bool>>())
+    public PieceShape() : this(new Array<Array<bool>>(), new Color())
     {
     }
 
@@ -154,5 +155,17 @@ public partial class PieceShape : Resource
         }
 
         return true;
+    }
+
+    public object Clone()
+    {
+        Array<Array<bool>> shape = new();
+
+        foreach (var row in _shape)
+        {
+            shape.Add(new Array<bool>(row));
+        }
+
+        return new PieceShape(shape, _color);
     }
 }

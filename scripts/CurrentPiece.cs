@@ -15,7 +15,8 @@ public partial class CurrentPiece : Node2D
     private const int MaxResets = 15;
 
     [Export]
-    private PieceShape _shape;
+    private PieceShape _defaultShape;
+    private PieceShape _currentShape;
 
     [Export]
     private PackedScene _piecePart;
@@ -37,7 +38,7 @@ public partial class CurrentPiece : Node2D
 
     private TileMapLayer _board;
 
-    public PieceShape Shape { get => _shape; }
+    public PieceShape Shape { get => _defaultShape; }
 
     public bool[,] BoardSquares { get => _boardSquares; set => _boardSquares = value; }
 
@@ -69,7 +70,7 @@ public partial class CurrentPiece : Node2D
     {
         if (@event.IsActionPressed("rotate_counterclock"))
         {
-            _shape.RotateClockwise();
+            _currentShape.RotateClockwise();
 
             if (_lockTimer.TimeLeft > 0 && _remainingResets > 0)
             {
@@ -83,7 +84,22 @@ public partial class CurrentPiece : Node2D
         }
         else if (@event.IsActionPressed("rotate_clock"))
         {
-            _shape.RotateCounterClockwise();
+            _currentShape.RotateCounterClockwise();
+
+            if (_lockTimer.TimeLeft > 0 && _remainingResets > 0)
+            {
+                _lockTimer.Start();
+                _remainingResets--;
+            }
+
+            DrawPiece();
+            UpdateBounds();
+            CorrectPosition();
+        }
+        else if (@event.IsActionPressed("rotate_180"))
+        {
+            _currentShape.RotateClockwise();
+            _currentShape.RotateClockwise();
 
             if (_lockTimer.TimeLeft > 0 && _remainingResets > 0)
             {
@@ -137,10 +153,20 @@ public partial class CurrentPiece : Node2D
     {
         _canFall = true;
         _parts.Clear();
-        _shape = shape;
+        _defaultShape = shape;
+        _currentShape = (PieceShape)shape.Clone();
         GenerateParts();
         DrawPiece();
         UpdateBounds();
+    }
+
+    public void Hold()
+    {
+        foreach (var piece in _parts)
+        {
+            piece.QueueFree();
+        }
+        _parts.Clear();
     }
 
     private void Drop()
@@ -162,11 +188,11 @@ public partial class CurrentPiece : Node2D
     private void DrawPiece()
     {
         int part = 0;
-        for (int i = 0; i < _shape.Shape.Count; i++)
+        for (int i = 0; i < _currentShape.Shape.Count; i++)
         {
-            for (int j = 0; j < _shape.Shape[i].Count; j++)
+            for (int j = 0; j < _currentShape.Shape[i].Count; j++)
             {
-                if (_shape.Shape[i][j])
+                if (_currentShape.Shape[i][j])
                 {
                     Node2D piecePart = _parts[part];
                     GD.Print(piecePart.Name);
@@ -179,14 +205,14 @@ public partial class CurrentPiece : Node2D
 
     private void GenerateParts()
     {
-        for (int i = 0; i < _shape.Shape.Count; i++)
+        for (int i = 0; i < _currentShape.Shape.Count; i++)
         {
-            for (int j = 0; j < _shape.Shape[i].Count; j++)
+            for (int j = 0; j < _currentShape.Shape[i].Count; j++)
             {
-                if (_shape.Shape[i][j])
+                if (_currentShape.Shape[i][j])
                 {
                     Node2D piecePart = (Node2D)_piecePart.Instantiate();
-                    piecePart.Modulate = _shape.Color;
+                    piecePart.Modulate = _currentShape.Color;
                     AddChild(piecePart);
                     _parts.Add(piecePart);
                 }
@@ -302,7 +328,7 @@ public partial class CurrentPiece : Node2D
 
     private void UpdateBounds()
     {
-        Vector2 maxPosition = _board.MapToLocal(new Vector2I(GlobalVariables.BoardWidth - _shape.Shape.Count, GlobalVariables.BoardHeigth - _shape.Shape[0].Count));
+        Vector2 maxPosition = _board.MapToLocal(new Vector2I(GlobalVariables.BoardWidth - _currentShape.Shape.Count, GlobalVariables.BoardHeigth - _currentShape.Shape[0].Count));
 
         _maxX = maxPosition.X;
         _maxY = maxPosition.Y;
