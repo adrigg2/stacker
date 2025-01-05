@@ -135,6 +135,11 @@ public partial class CurrentPiece : Node2D
         }
         else if (@event.IsActionPressed("hard_drop"))
         {
+            int initialCell = _currentShape.Shape[0].Count + (int)(Position.Y / GlobalVariables.PiecePartSize);
+            int finalCell = _currentShape.Shape[0].Count + (int)(_pieceGuide.Position.Y / GlobalVariables.PiecePartSize);
+
+            GlobalVariables.Points += (finalCell - initialCell) * 2;
+
             Position = _pieceGuide.Position;
             LockPiece();
         }
@@ -171,6 +176,7 @@ public partial class CurrentPiece : Node2D
                 if (Position.Y < _maxY)
                 {
                     Position += new Vector2(0, GlobalVariables.PiecePartSize);
+                    GlobalVariables.Points++;
                 }
             }
             GetTree().CreateTimer(TimeBetweenInputs).Timeout += () => _input = true;

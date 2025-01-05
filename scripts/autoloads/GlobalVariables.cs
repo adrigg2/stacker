@@ -9,5 +9,6 @@ public static class GlobalVariables
 	public const int BoardHeigth = 20;
 	public const int PoolSize = 7;
 
-	public static int Level = 1;
+	public static int Level { get; set; } = 1;
+	public static int Points { get; set; } = 0;
 }

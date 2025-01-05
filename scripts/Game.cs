@@ -35,6 +35,9 @@ public partial class Game : Node
     [Export]
     private Label _level;
 
+    [Export]
+    private Label _points;
+
     private int[] _currentPool;
     private int[] _nextPool;
     private int _currentPoolIndex;
@@ -45,6 +48,8 @@ public partial class Game : Node
 
     private bool[,] _boardSquares;
     private bool _canHold;
+    private bool _combo;
+    private bool _b2bQuad;
 
     private PieceShape _heldPiece;
 
@@ -120,6 +125,11 @@ public partial class Game : Node
         {
             Restart();
         }
+    }
+
+    public override void _Process(double delta)
+    {
+        _points.Text = $"Points: {GlobalVariables.Points}";
     }
 
     private void Restart()
@@ -253,15 +263,27 @@ public partial class Game : Node
             {
                 case 1:
                     _clearedLines++;
+                    GlobalVariables.Points += 100 * GlobalVariables.Level;
+                    _b2bQuad = false;
                     break;
                 case 2:
                     _clearedLines += 3;
+                    GlobalVariables.Points += 300 * GlobalVariables.Level;
+                    _b2bQuad = false;
                     break;
                 case 3:
                     _clearedLines += 5;
+                    GlobalVariables.Points += 500 * GlobalVariables.Level;
+                    _b2bQuad = false;
                     break;
                 case 4:
                     _clearedLines += 8;
+                    GlobalVariables.Points += 800 * GlobalVariables.Level;
+                    if (_b2bQuad)
+                    {
+                        GlobalVariables.Points += 1200 * GlobalVariables.Level;
+                    }
+                    _b2bQuad = true;
                     break;
                 default:
                     break;
@@ -269,6 +291,10 @@ public partial class Game : Node
 
             _lines.Text = $"Lines cleared: {_clearedLines} / {_goal}";
 
+            if (_combo)
+            {
+                GlobalVariables.Points += 50 * GlobalVariables.Level;
+            }
 
             if (_clearedLines > _goal)
             {
@@ -279,6 +305,12 @@ public partial class Game : Node
                 _level.Text = $"Level: {GlobalVariables.Level}";
                 _lines.Text = $"Lines cleared: {_clearedLines} / {_goal}";
             }
+
+            _combo = true;
+        }
+        else
+        {
+            _combo = false;
         }
     }
 
