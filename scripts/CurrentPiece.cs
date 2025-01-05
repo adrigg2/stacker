@@ -3,6 +3,7 @@ using Godot.Collections;
 using Stacker.Scripts.Autoloads;
 using Stacker.Scripts.CustomResources;
 using System;
+using static Godot.TextServer;
 
 namespace Stacker.Scripts;
 public partial class CurrentPiece : Node2D
@@ -33,7 +34,7 @@ public partial class CurrentPiece : Node2D
 
     private bool _canFall;
     private bool _input;
-    private bool[,] _boardSquares;
+    private System.Collections.Generic.Dictionary<Vector2I, Node2D> _boardSquares;
 
     private Timer _lockTimer;
     private Timer _dropTimer;
@@ -42,7 +43,7 @@ public partial class CurrentPiece : Node2D
 
     public PieceShape Shape { get => _defaultShape; }
 
-    public bool[,] BoardSquares 
+    public System.Collections.Generic.Dictionary<Vector2I, Node2D> BoardSquares 
     { 
         get => _boardSquares;
         set
@@ -149,7 +150,7 @@ public partial class CurrentPiece : Node2D
     {
         if (_input)
         {
-            if (Input.IsActionPressed("move_left") && CheckMovementX(1))
+            if (Input.IsActionPressed("move_left") && CheckMovementX(-1))
             {
                 Position -= new Vector2(GlobalVariables.PiecePartSize, 0);
                 if (_lockTimer.TimeLeft > 0 && _remainingResets > 0)
@@ -160,7 +161,7 @@ public partial class CurrentPiece : Node2D
 
                 UpdatePieceGuide();
             }
-            else if (Input.IsActionPressed("move_right") && CheckMovementX(-1))
+            else if (Input.IsActionPressed("move_right") && CheckMovementX(1))
             {
                 Position += new Vector2(GlobalVariables.PiecePartSize, 0);
                 if (_lockTimer.TimeLeft > 0 && _remainingResets > 0)
@@ -295,11 +296,14 @@ public partial class CurrentPiece : Node2D
 
             if (mapPosition.Y + 1 < 0 || mapPosition.Y + 1 >= _maxY)
             {
+                GD.PrintRich("[color=red] skipping check [/color]");
                 continue;
             }
 
             if (Position.Y >= _maxY)
             {
+                GD.PrintRich("[color=yellow] found bottom [/color]");
+
                 if (_lockTimer.TimeLeft == 0)
                 {
                     _lockTimer.Start();
@@ -308,8 +312,10 @@ public partial class CurrentPiece : Node2D
                 return false;
             }
 
-            if (_boardSquares[mapPosition.X, mapPosition.Y + 1])
+            if (_boardSquares.ContainsKey(mapPosition + new Vector2I(0, 1)))
             {
+                GD.PrintRich("[color=yellow] found another piece [/color]");
+
                 if (_lockTimer.TimeLeft == 0)
                 {
                     _lockTimer.Start();
@@ -329,12 +335,13 @@ public partial class CurrentPiece : Node2D
             _lockTimer.Stop();
         }
 
+        GD.PrintRich("[color=green] can fall [/color]");
         return true;
     }
 
     private bool CheckMovementX(int direction)
     {
-        if ((Position.X - GlobalVariables.PiecePartSize < 0 && direction == 1) || (Position.X + GlobalVariables.PiecePartSize > _maxX && direction == -1))
+        if ((Position.X - GlobalVariables.PiecePartSize < 0 && direction == -1) || (Position.X + GlobalVariables.PiecePartSize > _maxX && direction == 1))
         {
             return false;
         }
@@ -348,7 +355,7 @@ public partial class CurrentPiece : Node2D
                 continue;
             }
 
-            if (_boardSquares[mapPosition.X + direction, mapPosition.Y])
+            if (_boardSquares.ContainsKey(mapPosition + new Vector2I(direction, 0)))
             {
                 return false;
             }
@@ -375,6 +382,70 @@ public partial class CurrentPiece : Node2D
         {
             Position = new Vector2(Position.X, _maxY);
             GD.Print($"Corrected position to {Position}");
+        }
+
+        Position += CalculateShortestMovement();
+    }
+
+    private Vector2 CalculateShortestMovement()
+    {
+        Vector2[] movements = new Vector2[3];
+
+        Vector2[] directions = new Vector2[] { new(GlobalVariables.PiecePartSize, 0), new(-GlobalVariables.PiecePartSize, 0), new(0, -GlobalVariables.PiecePartSize) };
+
+        for (int i = 0; i < 3; i++)
+        {
+            Vector2 position = Position;
+            bool overlapping = true;
+
+            while (overlapping)
+            {
+                int overlaps = 0;
+
+                foreach (var piece in _parts)
+                {
+                    Vector2I mapPosition = _board.LocalToMap(_board.ToLocal(piece.GlobalPosition));
+
+                    if (mapPosition.Y < 0)
+                    {
+                        continue;
+                    }
+
+                    if (_boardSquares.ContainsKey(mapPosition))
+                    {
+                        overlaps++;
+                    }
+                }
+
+                if (overlaps > 0)
+                {
+                    Position += directions[i];
+                    movements[i] += directions[i];
+
+                    if (Position.X < 0 || Position.X > _maxX)
+                    {
+                        overlaps = 0;
+                        movements[i] = new Vector2(int.MaxValue, int.MaxValue);
+                    }
+                }
+
+                overlapping = overlaps > 0;
+            }
+
+            Position = position;
+        }
+
+        if (movements[0].Length() < movements[1].Length() && movements[0].Length() < movements[2].Length())
+        {
+            return movements[0];
+        }
+        else if (movements[1].Length() < movements[0].Length() && movements[1].Length() < movements[2].Length())
+        {
+            return movements[1];
+        }
+        else
+        {
+            return movements[2];
         }
     }
 

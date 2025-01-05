@@ -52,7 +52,6 @@ public partial class Game : Node
 
     private System.Collections.Generic.Dictionary<Vector2I, Node2D> _parts;
 
-    private bool[,] _boardSquares;
     private bool _canHold;
     private bool _combo;
     private bool _b2bQuad;
@@ -83,9 +82,7 @@ public partial class Game : Node
             }
         }
 
-        _boardSquares = new bool[GlobalVariables.BoardWidth, GlobalVariables.BoardHeigth];
-
-        _currentPiece.BoardSquares = _boardSquares;
+        _currentPiece.BoardSquares = _parts;
         _currentPiece.Board = _board;
 
         GenerateNextPool();
@@ -156,9 +153,7 @@ public partial class Game : Node
 
         _parts.Clear();
 
-        _boardSquares = new bool[GlobalVariables.BoardWidth, GlobalVariables.BoardHeigth];
-
-        _currentPiece.BoardSquares = _boardSquares;
+        _currentPiece.BoardSquares = _parts;
         _currentPiece.Hold();
         _canHold = true;
         _heldPiece = new PieceShape();
@@ -250,11 +245,10 @@ public partial class Game : Node
                 return;
             }
 
-            _boardSquares[mapPosition.X, mapPosition.Y] = true;
             _parts.Add(mapPosition, part);
         }
 
-        _currentPiece.BoardSquares = _boardSquares;
+        _currentPiece.BoardSquares = _parts;
         CheckClear();
         PlaceNextPiece();
     }
@@ -263,12 +257,13 @@ public partial class Game : Node
     {
         List<int> rows = new();
 
-        for (int i = 0; i < _boardSquares.GetLength(1); i++)
+        for (int i = 0; i < GlobalVariables.BoardHeigth; i++)
         {
             bool cleared = true;
-            for (int j = 0; j <  _boardSquares.GetLength(0); j++)
+            for (int j = 0; j < GlobalVariables.BoardWidth; j++)
             {
-                if (!_boardSquares[j, i])
+                Vector2I position = new(j, i);
+                if (!_parts.ContainsKey(position))
                 {
                     cleared = false; 
                     break;
@@ -350,7 +345,6 @@ public partial class Game : Node
             {
                 _parts[new Vector2I(i, row)].QueueFree();
                 _parts.Remove(new Vector2I(i, row));
-                _boardSquares[i, row] = false;
             }
         }
 
@@ -376,19 +370,17 @@ public partial class Game : Node
             }
         }
 
-        _currentPiece.BoardSquares = _boardSquares;
+        _currentPiece.BoardSquares = _parts;
     }
 
     private void MovePart(Vector2I iPos, Vector2I fPos)
     {
         Node2D part = _parts[iPos];
         _parts.Remove(iPos);
-        _boardSquares[iPos.X, iPos.Y] = false;
 
         part.GlobalPosition = _board.ToGlobal(_board.MapToLocal(fPos));
 
         _parts.Add(fPos, part);
-        _boardSquares[fPos.X, fPos.Y] = true;
     }
 
     private void DrawPool()

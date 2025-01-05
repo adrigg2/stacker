@@ -15,12 +15,12 @@ public partial class PieceGuide : Node2D
 
     private TileMapLayer _board;
 
-    private bool[,] _boardSquares;
+    private System.Collections.Generic.Dictionary<Vector2I, Node2D> _boardSquares;
 
     private float _maxY;
 
     public TileMapLayer Board { get => _board; set => _board = value; }
-    public bool[,] BoardSquares { get => _boardSquares; set => _boardSquares = value; }
+    public System.Collections.Generic.Dictionary<Vector2I, Node2D> BoardSquares { get => _boardSquares; set => _boardSquares = value; }
 
     public PieceShape Shape 
     { 
@@ -115,7 +115,7 @@ public partial class PieceGuide : Node2D
                 return false;
             }
 
-            if (_boardSquares[mapPosition.X, mapPosition.Y + 1])
+            if (_boardSquares.ContainsKey(mapPosition + new Vector2I(0, 1)))
             {
                 return false;
             }
