@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://dwg3sh31hyjdh"]
+[gd_scene load_steps=18 format=3 uid="uid://dwg3sh31hyjdh"]
 
 [ext_resource type="Script" path="res://scripts/Game.cs" id="1_hw7sp"]
 [ext_resource type="PackedScene" uid="uid://brhchqn5pu7kt" path="res://scenes/current_piece.tscn" id="1_k7l60"]
@@ -26,10 +26,14 @@ sources/0 = SubResource("TileSetAtlasSource_1xosa")
 [sub_resource type="LabelSettings" id="LabelSettings_8yhtn"]
 font_size = 45
 
+[sub_resource type="LabelSettings" id="LabelSettings_foipl"]
+font_size = 150
+
 [sub_resource type="LabelSettings" id="LabelSettings_tpinm"]
 font_size = 30
 
-[node name="Game" type="Node" node_paths=PackedStringArray("_board", "_currentPiece", "_heldPieceViewport", "_poolViewport", "_lines", "_level", "_points")]
+[node name="Game" type="Node" node_paths=PackedStringArray("_board", "_currentPiece", "_heldPieceViewport", "_poolViewport", "_lines", "_level", "_points", "_gameOverPanel", "_restartButton")]
+process_mode = 3
 script = ExtResource("1_hw7sp")
 _board = NodePath("TileMapLayer")
 _pieceShapes = Array[Object]([ExtResource("2_ri8ja"), ExtResource("3_h6e5y"), ExtResource("4_1l1o1"), ExtResource("5_ai1ci"), ExtResource("6_th5sk"), ExtResource("7_teyyb"), ExtResource("8_i6yci")])
@@ -40,6 +44,8 @@ _piecePart = ExtResource("9_6eiyw")
 _lines = NodePath("UI/Label")
 _level = NodePath("UI/Label3")
 _points = NodePath("UI/Label5")
+_gameOverPanel = NodePath("UI/Panel")
+_restartButton = NodePath("UI/Panel/Button")
 
 [node name="TileMapLayer" type="TileMapLayer" parent="."]
 self_modulate = Color(1, 1, 1, 0.509804)
@@ -101,6 +107,33 @@ size = Vector2i(512, 1024)
 render_target_update_mode = 4
 
 [node name="Camera2D" type="Camera2D" parent="UI/VBoxContainer2/SubViewportContainer/SubViewport"]
+
+[node name="Panel" type="Panel" parent="UI"]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="UI/Panel"]
+layout_mode = 0
+offset_left = 363.0
+offset_top = 101.0
+offset_right = 1177.0
+offset_bottom = 306.0
+text = "Game Over"
+label_settings = SubResource("LabelSettings_foipl")
+
+[node name="Button" type="Button" parent="UI/Panel"]
+layout_mode = 0
+offset_left = 663.0
+offset_top = 443.0
+offset_right = 846.0
+offset_bottom = 520.0
+theme_override_font_sizes/font_size = 50
+text = "Restart"
 
 [node name="Label" type="Label" parent="UI"]
 layout_mode = 0

@@ -38,6 +38,12 @@ public partial class Game : Node
     [Export]
     private Label _points;
 
+    [Export]
+    private Panel _gameOverPanel;
+
+    [Export]
+    private Button _restartButton;
+
     private int[] _currentPool;
     private int[] _nextPool;
     private int _currentPoolIndex;
@@ -91,6 +97,8 @@ public partial class Game : Node
 
         _level.Text = $"Level: {GlobalVariables.Level}";
         _lines.Text = $"Lines cleared: {_clearedLines} / {_goal}";
+
+        _restartButton.Pressed += Restart;
     }
 
     public override void _UnhandledInput(InputEvent @event)
@@ -134,6 +142,9 @@ public partial class Game : Node
 
     private void Restart()
     {
+        _gameOverPanel.Visible = false;
+        GetTree().Paused = false;
+
         GlobalVariables.Level = 1;
         _currentPiece.LevelUp();
         _goal = GlobalVariables.Level * 5;
@@ -228,10 +239,17 @@ public partial class Game : Node
         {
             Vector2 position = part.GlobalPosition;
             part.GetParent()?.RemoveChild(part);
-            AddChild(part);
+            _board.AddChild(part);
             part.GlobalPosition = position;
 
-            Vector2I mapPosition = _board.LocalToMap(_board.ToLocal(position));
+            Vector2I mapPosition = _board.LocalToMap(part.Position);
+
+            if (mapPosition.Y < 0)
+            {
+                GameOver();
+                return;
+            }
+
             _boardSquares[mapPosition.X, mapPosition.Y] = true;
             _parts.Add(mapPosition, part);
         }
@@ -414,5 +432,11 @@ public partial class Game : Node
                 }
             }
         }
+    }
+
+    private void GameOver()
+    {
+        _gameOverPanel.Visible = true;
+        GetTree().Paused = true;
     }
 }
