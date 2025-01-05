@@ -97,7 +97,7 @@ public partial class Game : Node
     {
         if (@event.IsActionPressed("hold") && _canHold)
         {
-            if (_heldPiece == null)
+            if (_heldPiece == null || _heldPiece.Shape.Count == 0)
             {
                 _heldPiece = _currentPiece.Shape;
                 _currentPiece.Hold();
@@ -150,6 +150,16 @@ public partial class Game : Node
         _currentPiece.BoardSquares = _boardSquares;
         _currentPiece.Hold();
         _canHold = true;
+        _heldPiece = new PieceShape();
+
+        foreach (var child in _heldPieceViewport.GetChildren())
+        {
+            if (child is not Camera2D)
+            {
+                child.QueueFree();
+            }
+        }
+        DrawPiece(_heldPiece, _heldPieceViewport, new Vector2(0, 0));
 
         GenerateNextPool();
         _currentPool = _nextPool;
