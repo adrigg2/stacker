@@ -168,6 +168,6 @@ offset_left = 19.0
 offset_top = 846.0
 offset_right = 103.0
 offset_bottom = 888.0
-text = "v. 0.2
+text = "v. 0.2.1
 "
 label_settings = SubResource("LabelSettings_tpinm")
