@@ -1,0 +1,68 @@
+[gd_scene load_steps=5 format=3 uid="uid://dpw5u1u65n777"]
+
+[ext_resource type="Script" path="res://scripts/MainMenu.cs" id="1_k45ak"]
+[ext_resource type="PackedScene" uid="uid://dwg3sh31hyjdh" path="res://scenes/game.tscn" id="2_4arv1"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_r45go"]
+font_size = 64
+
+[sub_resource type="LabelSettings" id="LabelSettings_6y36j"]
+font_size = 30
+
+[node name="MainMenu" type="Control" node_paths=PackedStringArray("_startButton", "_exitButton", "_settingsButton")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_k45ak")
+_startButton = NodePath("Start")
+_exitButton = NodePath("Exit")
+_settingsButton = NodePath("Options")
+_game = ExtResource("2_4arv1")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 562.0
+offset_top = 36.0
+offset_right = 980.0
+offset_bottom = 124.0
+text = "Stacker game"
+label_settings = SubResource("LabelSettings_r45go")
+
+[node name="Label4" type="Label" parent="Label"]
+offset_left = -547.0
+offset_top = 812.0
+offset_right = -463.0
+offset_bottom = 854.0
+text = "v. 0.3
+"
+label_settings = SubResource("LabelSettings_6y36j")
+
+[node name="Start" type="Button" parent="."]
+layout_mode = 0
+offset_left = 725.0
+offset_top = 272.0
+offset_right = 818.0
+offset_bottom = 330.0
+theme_override_font_sizes/font_size = 36
+text = "Start"
+
+[node name="Options" type="Button" parent="."]
+layout_mode = 0
+offset_left = 698.0
+offset_top = 361.0
+offset_right = 843.0
+offset_bottom = 419.0
+theme_override_font_sizes/font_size = 36
+text = "Options"
+
+[node name="Exit" type="Button" parent="."]
+layout_mode = 0
+offset_left = 733.0
+offset_top = 451.0
+offset_right = 805.0
+offset_bottom = 509.0
+theme_override_font_sizes/font_size = 36
+text = "Exit"
