@@ -389,9 +389,9 @@ public partial class CurrentPiece : Node2D
 
     private Vector2 CalculateShortestMovement()
     {
-        Vector2[] movements = new Vector2[3];
+        Vector2[] movements = new Vector2[4];
 
-        Vector2[] directions = new Vector2[] { new(GlobalVariables.PiecePartSize, 0), new(-GlobalVariables.PiecePartSize, 0), new(0, -GlobalVariables.PiecePartSize) };
+        Vector2[] directions = new Vector2[] { new(GlobalVariables.PiecePartSize, 0), new(-GlobalVariables.PiecePartSize, 0), new(0, -GlobalVariables.PiecePartSize), new(0, GlobalVariables.PiecePartSize) };
 
         for (int i = 0; i < 3; i++)
         {
