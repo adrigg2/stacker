@@ -51,13 +51,13 @@ self_modulate = Color(1, 1, 1, 0.509804)
 position = Vector2(640, 130)
 tile_set = SubResource("TileSet_p84by")
 
-[node name="CurrentPiece" parent="TileMapLayer" node_paths=PackedStringArray("_pieceGuide") instance=ExtResource("1_k7l60")]
-_pieceGuide = NodePath("../PieceGuide")
-
 [node name="PieceGuide" type="Node2D" parent="TileMapLayer"]
 modulate = Color(1, 1, 1, 0.392157)
 script = ExtResource("12_shskj")
 _piecePart = ExtResource("9_6eiyw")
+
+[node name="CurrentPiece" parent="TileMapLayer" node_paths=PackedStringArray("_pieceGuide") instance=ExtResource("1_k7l60")]
+_pieceGuide = NodePath("../PieceGuide")
 
 [node name="UI" type="Control" parent="."]
 layout_mode = 3

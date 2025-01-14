@@ -273,7 +273,7 @@ public partial class CurrentPiece : Node2D
         }
     }
 
-    private double CalculateGravity()
+    private static double CalculateGravity()
     {
         return Math.Pow(0.8 - ((GlobalVariables.Level - 1) * 0.007), GlobalVariables.Level - 1);
     }

@@ -60,11 +60,9 @@ public partial class PieceGuide : Node2D
 
     public void Fall()
     {
-        bool canFall = true;
-        while (canFall)
+        while (CheckMovementY())
         {
             Position += new Vector2(0, GlobalVariables.PiecePartSize);
-            canFall = CheckMovementY();
         }
     }
 
