@@ -32,7 +32,7 @@ font_size = 150
 [sub_resource type="LabelSettings" id="LabelSettings_tpinm"]
 font_size = 30
 
-[node name="Game" type="Node" node_paths=PackedStringArray("_board", "_currentPiece", "_heldPieceViewport", "_poolViewport", "_lines", "_level", "_points", "_gameOverPanel", "_restartButton")]
+[node name="Game" type="Node" node_paths=PackedStringArray("_board", "_currentPiece", "_heldPieceViewport", "_poolViewport", "_lines", "_level", "_points", "_gameOverPanel", "_restartButton", "_backToMenu")]
 script = ExtResource("1_hw7sp")
 _board = NodePath("TileMapLayer")
 _pieceShapes = Array[Object]([ExtResource("2_ri8ja"), ExtResource("3_h6e5y"), ExtResource("4_1l1o1"), ExtResource("5_ai1ci"), ExtResource("6_th5sk"), ExtResource("7_teyyb"), ExtResource("8_i6yci")])
@@ -45,6 +45,7 @@ _level = NodePath("UI/Label3")
 _points = NodePath("UI/Label5")
 _gameOverPanel = NodePath("UI/Panel")
 _restartButton = NodePath("UI/Panel/Button")
+_backToMenu = NodePath("UI/Panel/Button2")
 
 [node name="TileMapLayer" type="TileMapLayer" parent="."]
 self_modulate = Color(1, 1, 1, 0.509804)
@@ -134,6 +135,15 @@ offset_right = 846.0
 offset_bottom = 520.0
 theme_override_font_sizes/font_size = 50
 text = "Restart"
+
+[node name="Button2" type="Button" parent="UI/Panel"]
+layout_mode = 0
+offset_left = 663.0
+offset_top = 539.0
+offset_right = 846.0
+offset_bottom = 616.0
+theme_override_font_sizes/font_size = 50
+text = "Menu"
 
 [node name="Label" type="Label" parent="UI"]
 layout_mode = 0
