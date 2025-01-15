@@ -1,7 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://dpw5u1u65n777"]
+[gd_scene load_steps=7 format=3 uid="uid://dcasrv1o1t0r3"]
 
 [ext_resource type="Script" path="res://scripts/MainMenu.cs" id="1_k45ak"]
-[ext_resource type="PackedScene" uid="uid://dwg3sh31hyjdh" path="res://scenes/game.tscn" id="2_4arv1"]
+[ext_resource type="Script" path="res://scripts/StartOptions.cs" id="2_0jcoc"]
+[ext_resource type="Script" path="res://scripts/OptionsPanel.cs" id="3_uwk4w"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_75gcq"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_r45go"]
 font_size = 64
@@ -9,20 +12,32 @@ font_size = 64
 [sub_resource type="LabelSettings" id="LabelSettings_6y36j"]
 font_size = 30
 
-[node name="MainMenu" type="Control" node_paths=PackedStringArray("_startButton", "_exitButton", "_settingsButton")]
+[node name="MainMenu" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="MainMenuPanel" type="Panel" parent="." node_paths=PackedStringArray("_startButton", "_exitButton", "_settingsButton", "_customizeButton", "_mainPanel", "_startOptions", "_optionsPanel")]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_75gcq")
 script = ExtResource("1_k45ak")
 _startButton = NodePath("Start")
 _exitButton = NodePath("Exit")
 _settingsButton = NodePath("Options")
-_game = ExtResource("2_4arv1")
+_customizeButton = NodePath("Customize")
+_mainPanel = NodePath(".")
+_startOptions = NodePath("../StartOptions")
+_optionsPanel = NodePath("../OptionsPanel")
 
-[node name="Label" type="Label" parent="."]
+[node name="Label" type="Label" parent="MainMenuPanel"]
 layout_mode = 0
 offset_left = 562.0
 offset_top = 36.0
@@ -31,16 +46,17 @@ offset_bottom = 124.0
 text = "Stacker game"
 label_settings = SubResource("LabelSettings_r45go")
 
-[node name="Label4" type="Label" parent="Label"]
-offset_left = -547.0
-offset_top = 812.0
-offset_right = -463.0
-offset_bottom = 854.0
+[node name="Label4" type="Label" parent="MainMenuPanel"]
+layout_mode = 0
+offset_left = 15.0
+offset_top = 848.0
+offset_right = 156.0
+offset_bottom = 890.0
 text = "v. 0.3
 "
 label_settings = SubResource("LabelSettings_6y36j")
 
-[node name="Start" type="Button" parent="."]
+[node name="Start" type="Button" parent="MainMenuPanel"]
 layout_mode = 0
 offset_left = 725.0
 offset_top = 272.0
@@ -49,7 +65,7 @@ offset_bottom = 330.0
 theme_override_font_sizes/font_size = 36
 text = "Start"
 
-[node name="Options" type="Button" parent="."]
+[node name="Options" type="Button" parent="MainMenuPanel"]
 layout_mode = 0
 offset_left = 698.0
 offset_top = 361.0
@@ -58,11 +74,102 @@ offset_bottom = 419.0
 theme_override_font_sizes/font_size = 36
 text = "Options"
 
-[node name="Exit" type="Button" parent="."]
+[node name="Customize" type="Button" parent="MainMenuPanel"]
+layout_mode = 0
+offset_left = 675.0
+offset_top = 437.0
+offset_right = 865.0
+offset_bottom = 495.0
+theme_override_font_sizes/font_size = 36
+text = "Customize"
+
+[node name="Exit" type="Button" parent="MainMenuPanel"]
 layout_mode = 0
 offset_left = 733.0
-offset_top = 451.0
+offset_top = 517.0
 offset_right = 805.0
-offset_bottom = 509.0
+offset_bottom = 575.0
 theme_override_font_sizes/font_size = 36
 text = "Exit"
+
+[node name="StartOptions" type="Panel" parent="." node_paths=PackedStringArray("_normalGame", "_40Lines", "_blitz", "_customGame", "_mp", "_menu", "_mainMenu", "_startPanel")]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("2_0jcoc")
+_normalGame = NodePath("Normal")
+_40Lines = NodePath("40Lines")
+_blitz = NodePath("Blitz")
+_customGame = NodePath("Custom")
+_mp = NodePath("MP")
+_menu = NodePath("Menu")
+_mainMenu = NodePath("../MainMenuPanel")
+_startPanel = NodePath(".")
+
+[node name="Normal" type="Button" parent="StartOptions"]
+layout_mode = 0
+offset_left = 128.0
+offset_top = 306.0
+offset_right = 268.0
+offset_bottom = 364.0
+theme_override_font_sizes/font_size = 36
+text = "Normal"
+
+[node name="40Lines" type="Button" parent="StartOptions"]
+layout_mode = 0
+offset_left = 311.0
+offset_top = 303.0
+offset_right = 451.0
+offset_bottom = 361.0
+theme_override_font_sizes/font_size = 36
+text = "40 lines"
+
+[node name="Blitz" type="Button" parent="StartOptions"]
+layout_mode = 0
+offset_left = 523.0
+offset_top = 303.0
+offset_right = 663.0
+offset_bottom = 361.0
+theme_override_font_sizes/font_size = 36
+text = "Blitz"
+
+[node name="Custom" type="Button" parent="StartOptions"]
+layout_mode = 0
+offset_left = 733.0
+offset_top = 303.0
+offset_right = 875.0
+offset_bottom = 361.0
+theme_override_font_sizes/font_size = 36
+text = "Custom"
+
+[node name="MP" type="Button" parent="StartOptions"]
+layout_mode = 0
+offset_left = 925.0
+offset_top = 301.0
+offset_right = 1067.0
+offset_bottom = 359.0
+theme_override_font_sizes/font_size = 36
+text = "Multi Player"
+
+[node name="Menu" type="Button" parent="StartOptions"]
+layout_mode = 0
+offset_left = 577.0
+offset_top = 573.0
+offset_right = 793.0
+offset_bottom = 631.0
+theme_override_font_sizes/font_size = 36
+text = "Back to menu"
+
+[node name="OptionsPanel" type="Panel" parent="."]
+visible = false
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("3_uwk4w")
