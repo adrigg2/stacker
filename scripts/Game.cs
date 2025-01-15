@@ -44,6 +44,9 @@ public partial class Game : Node
     [Export]
     private Button _restartButton;
 
+    [Export]
+    private Button _backToMenu;
+
     private int[] _currentPool;
     private int[] _nextPool;
     private int _currentPoolIndex;
@@ -96,6 +99,7 @@ public partial class Game : Node
         _lines.Text = $"Lines cleared: {_clearedLines} / {_goal}";
 
         _restartButton.Pressed += Restart;
+        _backToMenu.Pressed += () => GetTree().ChangeSceneToFile("res://scenes/main_menu.tscn");
     }
 
     public override void _UnhandledInput(InputEvent @event)

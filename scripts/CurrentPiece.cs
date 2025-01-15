@@ -3,7 +3,6 @@ using Godot.Collections;
 using Stacker.Scripts.Autoloads;
 using Stacker.Scripts.CustomResources;
 using System;
-using static Godot.TextServer;
 
 namespace Stacker.Scripts;
 public partial class CurrentPiece : Node2D
